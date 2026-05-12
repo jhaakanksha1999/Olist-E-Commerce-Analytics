@@ -1,91 +1,166 @@
-# Olist-E-Commerce-Analytics
-Olist E-Commerce Analytics & Retention Dashboard
-Project Purpose
+Olist E-Commerce Analytics: Customer Retention & Revenue Optimization
+Project Overview
 
-This project analyzes the Olist Brazilian e-commerce dataset to understand customer behavior, sales performance, delivery efficiency, and churn risk.
+This project analyzes the Brazilian Olist e-commerce marketplace to uncover the operational and customer behavior factors impacting revenue, retention, and customer satisfaction.
 
-The goal was to transform raw transactional data into actionable business insights using SQL, Python, and Power BI.
+Using SQL, Python, and Power BI, the project transforms raw transactional data into business insights that help stakeholders identify churn risks, improve delivery performance, and optimize customer retention strategies.
 
-Business Case
+The final deliverable is an interactive executive dashboard designed to support data-driven business decisions.
 
-Olist needed visibility into:
+Business Problem
 
-Why customers stop purchasing
-How delivery delays impact satisfaction
-Which customers and categories drive revenue
-Where operational inefficiencies exist
-Which regions contribute the most sales
+E-commerce businesses often struggle to answer critical questions such as:
 
-Without these insights, the business risks:
+Why are customers churning?
+How do delivery delays affect customer satisfaction?
+Which customer segments generate the most value?
+Which product categories and regions drive revenue growth?
+Where are operational inefficiencies occurring in the order lifecycle?
 
-Customer churn
-Revenue loss
-Poor customer experience
-Inefficient marketing and logistics decisions
-Goals
+Without visibility into these metrics, businesses risk:
+
+Losing repeat customers
+Declining customer satisfaction
+Revenue leakage
+Inefficient logistics and marketing decisions
+
+This project was built to solve those problems using analytics and business intelligence.
+
+Project Goals
+
+The primary objectives of this analysis were to:
+
 Analyze customer purchasing behavior
-Identify churn-risk customers using RFM analysis
-Measure delivery impact on customer reviews
-Track sales and revenue trends
-Build an interactive executive dashboard
-Support retention and revenue optimization strategies
-Deliverables
-SQL EDA
-Revenue analysis
-Customer behavior analysis
-Funnel analysis
-Churn analysis
-RFM segmentation
-Regional sales analysis
-Python
-Data cleaning & preprocessing
-Feature engineering
-A/B testing & statistical analysis
-Exploratory data analysis
-Power BI Dashboard
+Identify churn-risk customers using RFM segmentation
+Measure the relationship between delivery speed and review scores
+Monitor revenue and order trends over time
+Evaluate operational performance across the order funnel
+Build an interactive dashboard for business stakeholders
+Solution Approach
+1. Data Cleaning & Preparation (Python)
 
-Interactive dashboard featuring:
+The raw dataset contained:
 
-Revenue KPIs
-Churn trends
-RFM customer segments
-Delivery performance analysis
-Regional sales map
+Missing values
+Duplicate records
+Inconsistent datetime formats
+Null review scores
+Multiple transaction-level tables
+Key Preparation Steps
+Cleaned and standardized data
+Engineered delivery and churn metrics
+Calculated fulfillment time
+Created analytical features for segmentation and KPI tracking
+Features Created
+Delivery delay
+Delivery buckets
+Recency, Frequency, Monetary (RFM) metrics
+Revenue at risk
+Customer churn indicators
+2. SQL Exploratory Data Analysis
+
+SQL was used to answer business-critical questions and create reusable analytical views for Power BI.
+
+Analysis Performed
+Revenue Analysis
+Total revenue
+Average order value (AOV)
 Monthly sales trends
-Key Insights
-Fast deliveries produced significantly higher review scores
-A large portion of revenue came from repeat customers
-Southeast Brazil generated the highest sales volume
-Millions in revenue were associated with churn-risk customers
-Delivery delays strongly impacted customer satisfaction
-Tools Used
-SQL
-Python (Pandas, NumPy, SciPy, Matplotlib)
-Power BI
+Revenue by product category
+Revenue by state and city
+Customer Analysis
+Repeat purchase behavior
+Customer order frequency
+Customer lifetime spending patterns
+RFM Segmentation
+
+Customers were segmented into:
+
+Loyal
+At Risk
+New
+Other
+Churn Analysis
+
+Customers inactive for more than 180 days were classified as churned to estimate revenue exposure and retention opportunities.
+
+Funnel Analysis
+
+Tracked customer progression through:
+
+Order placed
+Approved orders
+Delivered orders
+Reviewed orders
+Delivery Performance Analysis
+
+Measured how fulfillment speed impacts customer satisfaction and review scores.
+
+3. Statistical Analysis & A/B Testing (Python)
+
+Hypothesis testing was performed to validate business assumptions.
+
+Example Tests
+Fast delivery vs slow delivery customer reviews
+Behavioral differences across customer segments
+Techniques Used
+T-tests
+Confidence interval analysis
+Distribution comparison
+
+This helped move recommendations beyond assumptions into statistically supported insights.
+
+4. Executive Dashboard (Power BI)
+
+An interactive dashboard was developed to help stakeholders monitor KPIs and identify actionable insights quickly.
+
+Dashboard Features
+KPI Cards
+Total Revenue
+Total Orders
+Total Customers
+Revenue at Risk
+Average Review Score
+Interactive Visuals
+Sales trend analysis
+Churn trends
+RFM customer segmentation
+Delivery delay vs review score
+Regional sales distribution
+Top-selling categories
+Filters
+Year
+Product category
+Customer state
+Key Business Insights
+Delivery Speed Strongly Impacts Satisfaction
+
+Customers receiving faster deliveries gave significantly higher review scores than customers with delayed deliveries.
+
 Business Impact
 
-This project helps stakeholders:
+Improving logistics performance can directly improve customer satisfaction and retention.
 
-Improve retention strategies
-Optimize logistics performance
-Identify high-value customer segments
-Monitor operational KPIs
-Make data-driven business decisions
+Revenue Is Concentrated Among Repeat Customers
 
-Business Insights:
-Delivery speed directly impacts customer satisfaction
-Fast deliveries score 4.3★, while very slow deliveries drop to 3.0★ — a 43% decline.
+A relatively small segment of repeat customers contributed a significant share of total revenue.
 
- Customer churn is high
-71% churn rate with R$6.25M revenue at risk — strong opportunity for win‑back campaigns.
+Business Impact
 
-Dataset used: Brazilian Ecommerce dataset Kaggle
+Retention campaigns may generate higher ROI than focusing only on new customer acquisition.
 
- Southeast Brazil dominates sales
-São Paulo, Rio de Janeiro, and Minas Gerais account for the majority of orders.
+High Churn Risk Represents Revenue Exposure
 
-Category performance is uneven
-Bed Bath, Health Beauty, and Computers Accessories are the top revenue drivers.
+A substantial number of customers became inactive after long purchase gaps, creating millions in revenue at risk.
 
-Customer activity peaked in mid‑2018
-Seasonal buying patterns with low repeat purchases.
+Business Impact
+
+Win-back campaigns targeting churn-risk customers could recover lost revenue.
+
+Southeast Brazil Dominates Sales
+
+States such as São Paulo and Rio de Janeiro generated the highest order volumes and revenue.
+
+Business Impact
+
+Regional expansion strategies can focus on underperforming markets while strengthening high-performing regions.
