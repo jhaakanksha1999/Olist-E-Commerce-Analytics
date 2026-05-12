@@ -1,0 +1,288 @@
+-- How big is the dataset?
+Select count(*) from olist_data;
+select count(distinct customer_unique_id) from olist_data;
+
+-- Time range
+select min(order_purchase_timestamp), max(order_purchase_timestamp) from olist_data;
+
+-- Revenue overview
+select round(sum(payment_value),2) as total_revenue,
+round(avg(payment_value),2) as avg_order_value
+from olist_data;
+
+-- Customer Behaviour
+select 
+customer_unique_id, count(Distinct order_id) as total_order,
+round(sum(payment_value),2) as total_spent
+from olist_data 
+group by customer_unique_id;
+
+select total_order,count(*) as num_customers
+from( select customer_unique_id, count(Distinct order_id) as total_order
+from olist_data 
+group by customer_unique_id) t
+group by total_order
+order by total_order;
+
+-- Delivery impact
+select avg(datediff(order_delivered_customer_date,order_purchase_timestamp)) as avg_delivery_days
+from olist_data;
+
+-- Review Behaviour
+select review_score,count(*) as total_orders
+from olist_data
+group by review_score
+order by review_score;
+
+-- RFM analysis 
+Create Table rfm_table as
+select customer_unique_id,
+datediff((select max(order_purchase_timestamp) from olist_data),Max(order_purchase_timestamp)) as recency,
+count(distinct order_id) as frequency,
+round(sum(payment_value),2) as monetary
+from olist_data
+group by customer_unique_id;
+
+select * from rfm_table where frequency >1;
+
+ create table segment_table as 
+ with rfm_score as (select * ,
+NTILE(5) over(order by recency desc) as r_score,
+NTILE(5) over(order by frequency asc) as f_score,
+NTILE(5) over(order by monetary asc) as m_score
+from rfm_table)
+select*,
+case 
+when r_score>= 4 and f_score>= 4 then 'Loyal Customer'
+when r_score>= 4 and f_score <= 2 then 'New Customer'
+when r_score <= 4 and f_score>= 4 then 'At risk'
+else 'Others'
+end as segment from rfm_score;
+
+select * from segment_table;
+
+-- We define churn simply as customer who have not purchased in 90 days
+
+with churn_table as(
+select * ,
+case when recency > 180 then 'churned'
+else 'Active' end as churn_status
+from rfm_table)
+select churn_status,
+count(*) as customers
+from churn_table
+group by churn_status;
+
+
+-- Churn by review score
+select review_score,
+count(distinct customer_unique_id) as customers
+from olist_data
+group by review_score;
+
+-- churn by delivery delay
+select 
+case when datediff(order_delivered_customer_date,order_purchase_timestamp)>7 Then "Delayed"
+else 'On time' end as delivery_status,
+count(distinct customer_unique_id) as customers
+from olist_data
+group by delivery_status; -- more customers with delayed deliveries
+
+-- Funnel analysis, highlighting gaps between order approval and final delivery 
+create table funnel_table as 
+select order_id,customer_unique_id,
+count(distinct order_id) as total_order,
+count(distinct case when order_status in ('approved','shipped','delivered') then order_id end ) as approved_orders,
+count(distinct case when order_status="delivered" then order_id end ) as delivered_orders,
+count(distinct case when order_status="delivered" and  review_score is not null then order_id end) as reviewed_orders
+from olist_data
+group by order_id,customer_unique_id;
+
+select * from funnel_table;
+
+select 
+count(distinct order_id) as total_orders,
+(count(distinct case when order_status="delivered" then order_id end)*1.0/count(distinct order_id) )as delivery_rate,
+count(distinct case when order_status = "delivered" and review_score is not null then order_id end)*1.0/count(distinct order_id ) as review_rate
+from olist_data;
+
+SELECT order_status, COUNT(*) AS count
+FROM olist_data
+GROUP BY order_status;
+
+select
+count(distinct order_id) as total_order,
+count(distinct case when order_status in ('approved','shipped','delivered') then order_id end ) as approved_orders,
+count(distinct case when order_status="delivered" then order_id end ) as delivered_orders,
+count(distinct case when order_status="delivered" and  review_score is not null then order_id end) as reviewed_orders
+from olist_data;
+
+SELECT 
+    r.segment,
+    COUNT(DISTINCT f.order_id) AS total_orders
+FROM funnel_table f
+JOIN segment_table r
+ON f.customer_unique_id = r.customer_unique_id
+GROUP BY r.segment;
+
+-- overall AOV
+select round(sum(payment_value)/count(distinct order_id),2) as AOV
+from olist_data;
+
+-- AOV per customer
+select customer_unique_id,
+ round(sum(payment_value)/count(distinct order_id),2) as customer_AOV
+from olist_data
+group by customer_unique_id;
+ 
+ -- creating views for Power BI Dashboard
+create view vw_cust_segment as
+with rfm_base as(
+select customer_unique_id,
+datediff(
+(select max(order_purchase_timestamp) from olist_data),max(order_purchase_timestamp)) as recency,
+count(distinct order_id) as frequency,
+round(sum(payment_value),2) as monetary
+from olist_data 
+group by customer_unique_id),
+rfm_score as(
+select *,
+NTILE(5) over(order by recency desc) as r_score,
+NTILE(5) over(order by frequency asc) as f_score,
+NTILE(5) over(order by monetary asc) as m_score
+from rfm_base)
+select * ,
+case when r_score >= 4 and f_score >= 4 then "Loyal"
+when r_score >= 4 and f_score <= 2 then "New"
+when r_score <= 2 and f_score >= 4 then "At Risk"
+else "Other" end as segment,
+ CASE 
+WHEN recency > 180 THEN 'Churned'
+ELSE 'Active'
+END AS churn_status
+FROM rfm_score;
+
+create view vw_orders as
+select 
+order_id,
+mAX(customer_unique_id) AS customer_unique_id,
+max(customer_id) as customer_id,
+max(order_status) as order_status,
+max(order_purchase_timestamp) as order_purchase_timestamp,
+max(order_delivered_customer_date) as order_delivered_customer_date,
+max(review_score) as review_score,
+sum(payment_value) as payment_value,
+datediff(max(order_delivered_customer_date),max(order_purchase_timestamp)) as delivery_days
+from olist_data
+group by order_id;
+
+
+
+select * from vw_cust_segment ;
+select * from vw_orders;
+
+-- sales trend over time
+select
+date_format(order_purchase_timestamp,"%Y-%m") as order_month,
+Year(order_purchase_timestamp) as year_order,
+Month(order_purchase_timestamp) as month_order,
+count(distinct order_id) as total_orders,
+round(sum(payment_value),2) as total_revenue,
+round(avg(payment_value),2) as avg_order_value
+from olist_data
+group by 
+date_format(order_purchase_timestamp,"%Y-%m"),
+Year(order_purchase_timestamp),
+Month(order_purchase_timestamp)
+order by year_order,month_order;
+
+-- sales by category
+select
+product_category_name_english as category,
+count(distinct order_id) as total_orders,
+round(sum(payment_value),2) as total_revenue,
+round(avg(review_score),2) as avg_review_score,
+round(avg(delivery_time),1) as avg_delivery_days
+from olist_data
+where product_category_name_english is not null
+group by product_category_name_english
+order by total_revenue desc;
+
+-- sales by State
+select
+customer_state,
+customer_city,
+concat(customer_state,", Brazil") as state_brazil,
+count(distinct order_id) as total_order,
+count(distinct customer_unique_id) as total_customers,
+round(sum(payment_value),2) as total_revenue,
+round(avg(payment_value),2) as avg_order_value,
+round(avg(review_score),2) as avg_review_score,
+round(avg(delivery_time),1) as avg_delivery_days,
+AVG(latitude) AS latitude,
+AVG(longitude) AS longitude
+from olist_data
+where customer_state is not null
+group by customer_state,customer_city
+order by total_revenue desc;
+
+-- churn trend
+select 
+date_format(order_purchase_timestamp,'%Y-%m') as order_month,
+year(order_purchase_timestamp) as year_order,
+month(order_purchase_timestamp) as month_order,
+count(distinct customer_unique_id) as total_customers,
+count(case when delivery_delay >7 then customer_unique_id end ) as delayed_cust,
+round(avg(review_score),2) as avg_review,
+round(avg(delivery_time),2) as avg_delivery_days
+from olist_data
+group by 
+date_format(order_purchase_timestamp,'%Y-%m') ,
+year(order_purchase_timestamp) ,
+month(order_purchase_timestamp) 
+order by year_order,month_order;
+
+-- Total Fulfillment Time
+select
+order_id,
+order_purchase_timestamp,
+order_delivered_customer_date,
+timestampdiff(hour,order_purchase_timestamp,order_delivered_customer_date) as total_fulfillment_hours
+from olist_data;
+
+select delivery_time from olist_data;
+
+-- Delivery review
+select 
+case when delivery_time <= 7 then "1.Fast"
+when delivery_time <= 14 then "2. Normal(8-14 days)"
+when delivery_time <= 21 then "3. Slow(15-21 days)"
+when delivery_time >= 21 then "4. Very Slow(21+ days)"
+else "Unknown" end as delivery_bucket,
+round(avg(review_score),2) as avg_review_score,
+count(distinct order_id) as total_order
+from olist_data
+where delivery_time is not null
+and review_score is not null 
+group by delivery_bucket
+order by delivery_bucket
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
