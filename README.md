@@ -11,18 +11,18 @@ Business Problem
 
 E-commerce businesses often struggle to answer critical questions such as:
 
-Why are customers churning?
-How do delivery delays affect customer satisfaction?
-Which customer segments generate the most value?
-Which product categories and regions drive revenue growth?
-Where are operational inefficiencies occurring in the order lifecycle?
+- Why are customers churning?
+- How do delivery delays affect customer satisfaction?
+- Which customer segments generate the most value?
+- Which product categories and regions drive revenue growth?
+- Where are operational inefficiencies occurring in the order lifecycle?
 
 Without visibility into these metrics, businesses risk:
 
-Losing repeat customers
-Declining customer satisfaction
-Revenue leakage
-Inefficient logistics and marketing decisions
+- Losing repeat customers
+- Declining customer satisfaction
+- Revenue leakage
+- Inefficient logistics and marketing decisions
 
 This project was built to solve those problems using analytics and business intelligence.
 
@@ -30,57 +30,57 @@ Project Goals
 
 The primary objectives of this analysis were to:
 
-Analyze customer purchasing behavior
-Identify churn-risk customers using RFM segmentation
-Measure the relationship between delivery speed and review scores
-Monitor revenue and order trends over time
-Evaluate operational performance across the order funnel
-Build an interactive dashboard for business stakeholders
-Solution Approach
+- Analyze customer purchasing behavior
+- Identify churn-risk customers using RFM segmentation
+- Measure the relationship between delivery speed and review scores
+- Monitor revenue and order trends over time
+- Evaluate operational performance across the order funnel
+- Build an interactive dashboard for business stakeholders
+- Solution Approach
 1. Data Cleaning & Preparation (Python)
 
 The raw dataset contained:
 
-Missing values
-Duplicate records
-Inconsistent datetime formats
-Null review scores
-Multiple transaction-level tables
-Key Preparation Steps
-Cleaned and standardized data
-Engineered delivery and churn metrics
-Calculated fulfillment time
-Created analytical features for segmentation and KPI tracking
-Features Created
-Delivery delay
-Delivery buckets
-Recency, Frequency, Monetary (RFM) metrics
-Revenue at risk
-Customer churn indicators
+- Missing values
+- Duplicate records
+- Inconsistent datetime formats
+- Null review scores
+- Multiple transaction-level tables
+- Key Preparation Steps
+- Cleaned and standardized data
+- Engineered delivery and churn metrics
+- Calculated fulfillment time
+- Created analytical features for segmentation and KPI tracking
+- Features Created
+- Delivery delay
+- Delivery buckets
+- Recency, Frequency, Monetary (RFM) metrics
+- Revenue at risk
+- Customer churn indicators
 2. SQL Exploratory Data Analysis
 
 SQL was used to answer business-critical questions and create reusable analytical views for Power BI.
-
-Analysis Performed
-Revenue Analysis
-Total revenue
-Average order value (AOV)
-Monthly sales trends
-Revenue by product category
-Revenue by state and city
-Customer Analysis
-Repeat purchase behavior
-Customer order frequency
-Customer lifetime spending patterns
-RFM Segmentation
+- 
+- Analysis Performed
+- Revenue Analysis
+- Total revenue
+- Average order value (AOV)
+- Monthly sales trends
+- Revenue by product category
+- Revenue by state and city
+- Customer Analysis
+- Repeat purchase behavior
+- Customer order frequency
+- Customer lifetime spending patterns
+- RFM Segmentation
 
 Customers were segmented into:
 
-Loyal
-At Risk
-New
-Other
-Churn Analysis
+- Loyal
+- At Risk
+- New
+- Other
+- Churn Analysis
 
 Customers inactive for more than 180 days were classified as churned to estimate revenue exposure and retention opportunities.
 
@@ -88,11 +88,11 @@ Funnel Analysis
 
 Tracked customer progression through:
 
-Order placed
-Approved orders
-Delivered orders
-Reviewed orders
-Delivery Performance Analysis
+- Order placed
+- Approved orders
+- Delivered orders
+- Reviewed orders
+- Delivery Performance Analysis
 
 Measured how fulfillment speed impacts customer satisfaction and review scores.
 
@@ -100,13 +100,13 @@ Measured how fulfillment speed impacts customer satisfaction and review scores.
 
 Hypothesis testing was performed to validate business assumptions.
 
-Example Tests
-Fast delivery vs slow delivery customer reviews
-Behavioral differences across customer segments
-Techniques Used
-T-tests
-Confidence interval analysis
-Distribution comparison
+- Example Tests
+- Fast delivery vs slow delivery customer reviews
+- Behavioral differences across customer segments
+- Techniques Used
+- T-tests
+- Confidence interval analysis
+- Distribution comparison
 
 This helped move recommendations beyond assumptions into statistically supported insights.
 
@@ -114,26 +114,26 @@ This helped move recommendations beyond assumptions into statistically supported
 
 An interactive dashboard was developed to help stakeholders monitor KPIs and identify actionable insights quickly.
 
-Dashboard Features
-KPI Cards
-Total Revenue
-Total Orders
-Total Customers
-Revenue at Risk
-Average Review Score
-Interactive Visuals
-Sales trend analysis
-Churn trends
-RFM customer segmentation
-Delivery delay vs review score
-Regional sales distribution
-Top-selling categories
-Filters
-Year
-Product category
-Customer state
-Key Business Insights
-Delivery Speed Strongly Impacts Satisfaction
+- Dashboard Features
+- KPI Cards
+- Total Revenue
+- Total Orders
+- Total Customers
+- Revenue at Risk
+- Average Review Score
+- Interactive Visuals
+- Sales trend analysis
+- Churn trends
+- RFM customer segmentation
+- Delivery delay vs review score
+- Regional sales distribution
+- Top-selling categories
+- Filters
+- Year
+- Product category
+- Customer state
+- Key Business Insights
+- Delivery Speed Strongly Impacts Satisfaction
 
 Customers receiving faster deliveries gave significantly higher review scores than customers with delayed deliveries.
 
